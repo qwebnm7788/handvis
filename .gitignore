@@ -1,0 +1,11 @@
+*.class
+*.log
+*.jar
+*.war
+*.tar.gz
+*.rar
+
+.classpath
+.project
+.settings
+
