@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +17,10 @@ public class Arduino {
 		sock = new Socket();
 		InetSocketAddress ipep = new InetSocketAddress(IP, port);
 		try {
-			sock.connect(ipep);
+			sock.connect(ipep, 5000);
 			logger.debug("success in arduino connection");
+		} catch(SocketTimeoutException e) {
+			logger.debug("socket timeout");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();

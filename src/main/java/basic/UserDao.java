@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+
 public class UserDao {
 	
 	public Connection getConnection() {
@@ -105,10 +107,6 @@ public class UserDao {
 	public boolean login(String userId, String password) throws SQLException {
 		User user = new User(userId, password);
 		User checkUser = findByUserId(userId);
-		if(user == null || checkUser == null) return false;
-		if(user.getUserId().equals(checkUser.getUserId()) && user.getPassword().equals(checkUser.getPassword())) {
-			return true;
-		}
-		return false;
+		return user.equals(checkUser);										//오버라이딩한 equals 함수로 비교
 	}
 }

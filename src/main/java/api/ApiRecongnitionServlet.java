@@ -14,12 +14,16 @@ import com.google.gson.JsonObject;
 
 @WebServlet("/api/recognition")
 public class ApiRecongnitionServlet extends HttpServlet {
-	public static JsonObject currentAction = null;
+	/*
+	 * ajax 요청을 받는 서블릿
+	 * 현재 유저의 상태를 세션에 currentAction 속성에 저장한다.
+	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String jsonData = ApiLoginServlet.readBody(request);
 		Gson gson = new Gson();
-		currentAction = gson.fromJson(jsonData, JsonObject.class);
+		HttpSession session = request.getSession();
+		session.setAttribute("currentAction", gson.fromJson(jsonData, JsonObject.class));
 		response.setStatus(200);
 	}
 }

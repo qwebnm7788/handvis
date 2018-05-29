@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<!-- Boostrap -->
+		<!-- Bootstrap -->
 		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
 		
 		<!-- JQuery -->
@@ -15,6 +15,19 @@
 	<body>
 		<div class="container-fluid">
 			<div class="row">
+				<%
+					String id = (String)session.getAttribute("userId");
+					if(id != null) {
+				%>
+					<p>User : <%=id %>   <p>
+					<p><a href="/users/logout">Logout</a></p>
+				<%
+					} else {
+				%>
+					<p>Unknown User</p>
+				<%} %>
+			</div>
+			<div class="row">
 				<div class="col-sm-8">
 					<div class="row justify-content-start">
 						<div class="embed-responsive embed-responsive-16by9">
@@ -24,7 +37,7 @@
 					</div>
 				</div>
 				<div class="col-sm-4">
-					<table class="table">
+					<table class="table"	>
 						<thead>
 							<tr>
 								<th scope="col" colspan="5">Instruction</th>
@@ -85,7 +98,7 @@
 						url: 'http://165.246.228.110:9999/api/ajax',
 						type: 'GET',
 						success: function(data) {
-							console.log(data['value']);
+							//console.log(data['value']);
 							//console.log(JSON.stringify(data));
 							g.text(data['value']);
 							//g.text(JSON.stringify(data));

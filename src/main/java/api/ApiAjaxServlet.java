@@ -17,6 +17,7 @@ import com.google.gson.JsonObject;
 public class ApiAjaxServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
 		PrintWriter out = response.getWriter();
 		
 		response.setHeader("Access-Control-Allow-Methods", "GET");
@@ -25,7 +26,7 @@ public class ApiAjaxServlet extends HttpServlet {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 
 		response.setContentType("application/json");
-		out.print(ApiRecongnitionServlet.currentAction);
+		out.print(session.getAttribute("currentAction"));
 		out.flush();
 	}
 }

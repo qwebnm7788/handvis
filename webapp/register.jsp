@@ -21,7 +21,7 @@
 	    <div class="card card-register mx-auto mt-5">
 	      <div class="card-header">Register an Account</div>
 	      <div class="card-body">
-	        <form action="/users/save" method="post">
+	        <form action="/users/register" method="post">
 	          <div class="form-group">
 	            <div class="form-row">
 	              <div class="col-md-12">

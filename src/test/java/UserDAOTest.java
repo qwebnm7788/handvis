@@ -10,13 +10,20 @@ import basic.User;
 import basic.UserDao;
 
 public class UserDAOTest {
-	public static User USER_TEST = new User("jaewon", "password");
+	public static User USER_TEST = new User("dummy", "password");
 	private UserDao userDao;
 	
 	@Before
 	public void setup() throws SQLException {
 		userDao = new UserDao();
 		userDao.removeUser(USER_TEST.getUserId());
+	}
+	
+	@Test
+	public void loginTest() throws Exception {
+		userDao = new UserDao();
+		userDao.addUser(USER_TEST);
+		assertTrue(userDao.login("dummy", "password"));
 	}
 	
 	@Test
