@@ -10,14 +10,22 @@ import java.net.SocketTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+ * Arduino.class
+ * 
+ * 아두이노와 소켓 통신을 위한 클래스
+ * 
+ */
 public class Arduino {
 	private static final Logger logger = LoggerFactory.getLogger(Arduino.class);
 	private Socket sock;
+	
+	//IP, port 를 이용하여 소켓 통신을 수행한다.
 	private void Connection(String IP, int port) {
 		sock = new Socket();
 		InetSocketAddress ipep = new InetSocketAddress(IP, port);
 		try {
-			sock.connect(ipep, 5000);
+			sock.connect(ipep, port);
 			logger.debug("success in arduino connection");
 		} catch(SocketTimeoutException e) {
 			logger.debug("socket timeout");
@@ -27,6 +35,7 @@ public class Arduino {
 		}
 	}
 	
+	//소켓을 통해 주어진 message를 전송하며, 그에 따른 응답을 반환한다.
 	public String sendMessage(String IP, int port, String message) throws IOException {
 		Connection(IP, port);
 		
@@ -37,16 +46,18 @@ public class Arduino {
 		out.print(message);
 		out.flush();
 		
-		//응답  출력
+		//응답을 받아온다.
 		String response = in.readLine();
 		DisConnection();
 		
 		return response;
 	}
 	
+	//연결종료
 	private void DisConnection() {
 		try {
 			sock.close();
+			logger.debug("socket disconnection()");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();

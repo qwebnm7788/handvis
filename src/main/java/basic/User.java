@@ -22,6 +22,15 @@ public class User {
 		return IPs.add(ip);
 	}
 	
+	public boolean removeIP(String ip) {
+		if(IPs.contains(ip)) {
+			IPs.remove(ip);
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
 	public String getUserId() {
 		return userId;
 	}
