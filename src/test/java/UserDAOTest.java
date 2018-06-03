@@ -27,12 +27,6 @@ public class UserDAOTest {
 	}
 	
 	@Test
-	public void connection() {
-		Connection conn = userDao.getConnection();
-		assertNotNull(conn);
-	}
-
-	@Test
 	public void crud() throws Exception {
 		User dbUser = userDao.findByUserId(USER_TEST.getUserId());
 		assertEquals(USER_TEST, dbUser);

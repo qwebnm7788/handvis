@@ -5,11 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.slf4j.Logger;
-
 public class UserDao {
 	
-	public Connection getConnection() {
+	private Connection getConnection() {
 		String url = "jdbc:mysql://localhost:8888/handvis";
 		String id = "study";
 		String password = "study";
@@ -18,7 +16,6 @@ public class UserDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			return DriverManager.getConnection(url, id, password);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			return null;
 		}
 	}

@@ -26,6 +26,8 @@
 				%>
 					<p>Unknown User</p>
 				<%} %>
+				
+				<a href="/api/update">Update</a>
 			</div>
 			<div class="row">
 				<div class="col-sm-8">

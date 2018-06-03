@@ -8,7 +8,6 @@ public class User {
 	private ArrayList<String> IPs; //사용자의 IOT 기기 IP정보들
 	
 	public User(String userId, String password) {
-		super();
 		this.userId = userId;
 		this.password = password;
 		this.IPs = new ArrayList<String>();
