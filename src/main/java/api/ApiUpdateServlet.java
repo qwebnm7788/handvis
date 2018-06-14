@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
+import basic.Arduino;
 import basic.Device;
 import basic.DeviceDao;
 import basic.User;
@@ -31,6 +32,7 @@ public class ApiUpdateServlet extends HttpServlet {
 	 * json의 리스트 형태로 반환한다.
 	 * [ {...}, {...}, ... ] 의 형태가 된다.
 	 */
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
@@ -65,41 +67,52 @@ public class ApiUpdateServlet extends HttpServlet {
 	/*
 	 * 유저가 특정 모듈의 현재 설정 상태를 갱신한다. (json 형태의 문자열로)
 	 * {
+	 * 		userId: 유저 ID
 	 * 		name: 모듈 이름
-	 * 		finger_idx: 변경할 손동작 번호
+	 * 		fingerNumber: 변경할 손동작 번호
 	 * 		background_image: 변경 손동작 이미지 파일 경로
 	 * 		state: 현재 상태정보
-	 * 		idx: 모듈 번호
+	 * 		deviceNumber: 모듈 번호
 	 * }
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 		
-		String userId = (String) session.getAttribute("userId");
-		if(userId == null) {
-			out.print("NO");
-			return;
-		}
-		
-		String jsonData = ApiLoginServlet.readBody(request);					//HTTP 몸체의 정보를 읽어온다.
-		Gson gson = new Gson();
+		String userId = request.getParameter("userId");
+		String name = request.getParameter("name");
+		int fingerNumber = Integer.parseInt(request.getParameter("fingerNumber"));
+		String background_image = request.getParameter("background_image");
+		int state = Integer.parseInt(request.getParameter("state"));
+		int deviceNumber = Integer.parseInt(request.getParameter("deviceNumber"));
 
-		logger.debug(jsonData);
-		Device module = gson.fromJson(jsonData, Device.class);				//전달된 device 정보를 추출한다.
-
+		Device module = new Device(deviceNumber, fingerNumber, name, background_image, state);
 		DeviceDao deviceDao = new DeviceDao();
+
+		logger.debug("value : " + String.valueOf(fingerNumber * 4) + " " + String.valueOf(fingerNumber));
 		try {
+			logger.debug(userId + " " + module);
 			boolean success = deviceDao.UpdateDevice(userId, module);				//update
 			if(success) {
-				out.print("OK");
+				logger.debug("update success");
+				out.print("1");
+				out.flush();
+				
+				Arduino arduino = new Arduino();
+				String IP = "165.246.223.36";
+				int port = 5000;
+				String msg = arduino.sendMessage(IP, port, (state == 0 ? String.valueOf(deviceNumber * 4) : String.valueOf(deviceNumber)));
+				logger.debug(msg);
 			}else {
-				out.print("NO");
+				logger.debug("update fail");
+				out.print("0");
 			}
 		} catch (SQLException e) {
+			logger.debug(e.getMessage());
 			e.printStackTrace();
+			response.setStatus(502);
 		}
-		
 	}
 }

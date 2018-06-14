@@ -47,10 +47,17 @@ public class Arduino {
 		out.flush();
 		
 		//응답을 받아온다.
-		String response = in.readLine();
+//		StringBuilder response = new StringBuilder();
+//		String str;
+//		logger.debug("before read");
+//		while((str = in.readLine()) != null) {
+//			logger.debug(str);
+//			System.out.println("WAITING");
+//			response.append(str);
+//		}
 		DisConnection();
-		
-		return response;
+		return "OK";
+		//return response.toString();
 	}
 	
 	//연결종료

@@ -26,30 +26,29 @@ public class ApiLoginServlet extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(ApiLoginServlet.class);
 	/*
 	 * 안드로이드에서의 로그인 요청을 받아 로그인을 시도한다.
-	 * 요청 정보는 json 형태로 다음과 같다.
-	 * {
-	 * 		userId: 아이디
-	 * 		password: 비밀번호
-	 * }
-	 * 
-	 * 로그인 성공 시 SUCCESS를, 실패 시 FAIL을 전달한다.
+	 * 요청 정보는 http 패킷 내부에 다음과 같은 값으로 전송된다.
+	 * (userId = ? & password = ?)
+	 * 로그인 성공 시 1를, 실패 시 0을 전달한다.
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		String jsonData = readBody(request);
-		Gson gson = new Gson();
+		response.setContentType("application/json");
+		
+		String userId = request.getParameter("userId");
+		String password = request.getParameter("password");
 		
 		PrintWriter out = response.getWriter();
-		
-		User user = gson.fromJson(jsonData, User.class);											//json 형태의 문자열 이용 유저 정보를 얻는다.
+		User user = new User(userId, password);
 		UserDao userDao = new UserDao();
+		
+		logger.debug("LOGIN attempted");
 		try {
 			if(userDao.login(user.getUserId(), user.getPassword())) {
-				session.setAttribute("userId", user.getUserId());
-				out.print("SUCCESS");
+				logger.debug("login success : " + userId + " " + password);
+				out.print("{perm:1}");
 			}else {
-				out.println("FAIL");
+				logger.debug("login failed : " + userId + password);
+				out.print("{perm:0}");
 			}
 		} catch (SQLException e) {
 			logger.debug("ApiLoginServlet userDao error");

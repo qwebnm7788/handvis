@@ -14,7 +14,9 @@
 	</head>
 	<body>
 		<div class="container-fluid">
+		<!--
 			<div class="row">
+			 
 				<%
 					String id = (String)session.getAttribute("userId");
 					if(id != null) {
@@ -24,22 +26,21 @@
 				<%
 					} else {
 				%>
-					<p>Unknown User</p>
+					<p style="margin-left: 10px">Unknown User</p>
 				<%} %>
 				
-				<a href="/api/update">Update</a>
+				<a href="/api/update" style="margin-left: 10px">Update</a>
+			 
 			</div>
+			-->
 			<div class="row">
 				<div class="col-sm-8">
-					<div class="row justify-content-start">
-						<div class="embed-responsive embed-responsive-16by9">
-							<video src="" autoplay poster="./images/fff.png"
-								class="embed-responsive embed-responsive-16by9"></video>
-						</div>
+					<div>
+						<img id="vd" alt="video" src="http://165.246.222.37:8080/video" width="800" height="600" />
 					</div>
 				</div>
 				<div class="col-sm-4">
-					<table class="table"	>
+					<table class="table">
 						<thead>
 							<tr>
 								<th scope="col" colspan="5">Instruction</th>
@@ -91,19 +92,32 @@
 				</div>
 			</div>
 		</div>
-
 		<script>
 			$(document).ready(function() {
+				var video = document.querySelector("video");
+				var img = document.querySelector("#test");
+				
+				var constraints = {
+						video: true,
+						audio: false
+				};
+				
+				/*
+				navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+					video.srcObject = stream;
+					video.play();
+				}).catch(function(err) {
+					console.log(err);
+				});
+				*/
 				var g = $("#go");
 				setInterval(() => {
 					$.ajax({
-						url: 'http://165.246.228.110:9999/api/ajax',
-						type: 'GET',
+						url: "http://165.246.243.33:9999/api/ajax",
+						type: "GET",
 						success: function(data) {
-							//console.log(data['value']);
-							//console.log(JSON.stringify(data));
+							console.log(data);
 							g.text(data['value']);
-							//g.text(JSON.stringify(data));
 						}
 					})
 				}, 1000);

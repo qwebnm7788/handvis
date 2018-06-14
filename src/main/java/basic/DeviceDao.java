@@ -6,9 +6,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import api.ApiUpdateServlet;
+
 public class DeviceDao {
+	private static final Logger logger = LoggerFactory.getLogger(DeviceDao.class);
 	private Connection getConnection() {
-		String url = "jdbc:mysql://localhost:8888/handvis";
+		String url = "jdbc:mysql://localhost:8888/handvis?characterEncoding=UTF-8";
 		String id = "study";
 		String password = "study";
 
@@ -33,11 +39,13 @@ public class DeviceDao {
 			pstmt.setInt(4, deviceInfo.getState());
 			pstmt.setInt(5, deviceInfo.getDeviceNumber());
 			pstmt.setString(6, userId);
-			
+				
 			int result = pstmt.executeUpdate();
+			logger.debug("UpdateDevice " + result);
 			return result != 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			logger.debug("DeviceDao - UpdateDevice : " + e.getMessage());
 			return false;
 		} finally {
 			if(pstmt != null) {

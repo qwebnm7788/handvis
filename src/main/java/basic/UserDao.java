@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class UserDao {
 	
 	private Connection getConnection() {
-		String url = "jdbc:mysql://localhost:8888/handvis";
+		String url = "jdbc:mysql://localhost:8888/handvis?autoReconnect=true&useSSL=false";
 		String id = "study";
 		String password = "study";
 
