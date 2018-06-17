@@ -97,8 +97,6 @@ public class ApiUpdateServlet extends HttpServlet {
 			boolean success = deviceDao.UpdateDevice(userId, module);				//update
 			if(success) {
 				logger.debug("update success");
-				out.print("1");
-				out.flush();
 				
 				Arduino arduino = new Arduino();
 				String IP = "165.246.223.36";
@@ -107,7 +105,6 @@ public class ApiUpdateServlet extends HttpServlet {
 				logger.debug(msg);
 			}else {
 				logger.debug("update fail");
-				out.print("0");
 			}
 		} catch (SQLException e) {
 			logger.debug(e.getMessage());

@@ -1,6 +1,8 @@
 package basic;
 
-public class Device {
+import java.util.Comparator;
+
+public class Device implements Comparable<Device> {
 	private int deviceNumber;
 	private int fingerNumber;
 	private String name;
@@ -63,5 +65,15 @@ public class Device {
 	@Override
 	public String toString() {
 		return deviceNumber + " " + fingerNumber + " " + background_image + " " + state;
+	}
+
+	@Override
+	public int compareTo(Device o) {
+		if(fingerNumber < o.fingerNumber) {
+			return -1;
+		}else if(fingerNumber > o.fingerNumber){
+			return 1;
+		}
+		return 0;
 	}
 }

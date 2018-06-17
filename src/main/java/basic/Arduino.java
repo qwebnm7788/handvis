@@ -30,7 +30,6 @@ public class Arduino {
 		} catch(SocketTimeoutException e) {
 			logger.debug("socket timeout");
 		} catch (IOException e) {
-			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -46,18 +45,8 @@ public class Arduino {
 		out.print(message);
 		out.flush();
 		
-		//응답을 받아온다.
-//		StringBuilder response = new StringBuilder();
-//		String str;
-//		logger.debug("before read");
-//		while((str = in.readLine()) != null) {
-//			logger.debug(str);
-//			System.out.println("WAITING");
-//			response.append(str);
-//		}
 		DisConnection();
 		return "OK";
-		//return response.toString();
 	}
 	
 	//연결종료
@@ -66,7 +55,6 @@ public class Arduino {
 			sock.close();
 			logger.debug("socket disconnection()");
 		} catch (IOException e) {
-			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}

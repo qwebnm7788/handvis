@@ -1,6 +1,7 @@
 package basic;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,11 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+ * LogInServlet.class
+ * 
+ * 웹페이지 로그인 기능
+ */
 @WebServlet("/users/login")
 public class LogInServlet extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(LogInServlet.class);
@@ -29,15 +35,22 @@ public class LogInServlet extends HttpServlet {
 
 		UserDao userDao = new UserDao();
 		try {
-			if(userDao.login(userId, password)) {
+			if(userDao.login(userId, password)) {					//로그인 성공
+				logger.debug("{} login success", userId);
 				session.setAttribute("userId", userId);
-				logger.debug("login {}", session.getAttribute("userId"));
+				
+				DeviceDao deviceDao = new DeviceDao();
+				Device[] devices = deviceDao.ListDeviceInfo(userId);
+				
+				Arrays.sort(devices);
+				
+				session.setAttribute("devices", devices);
 				response.sendRedirect("/");
 			}else {
+				logger.debug("{} login fail", userId);
 				response.sendRedirect("/login.jsp");
 			}
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}

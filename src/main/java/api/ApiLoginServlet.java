@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,40 +19,53 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import basic.Device;
+import basic.DeviceDao;
 import basic.User;
 import basic.UserDao;
 
+/*
+ * ApiLoginSerlvet.class
+ * 
+ * 안드로이드 로그인 기능
+ * 
+ * 입력: (userId=?&password=?)
+ * 반환: 성공시 {perm: 1}, 실패시 {perm: 0}
+ */
 @WebServlet("/api/users/login")
 public class ApiLoginServlet extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(ApiLoginServlet.class);
-	/*
-	 * 안드로이드에서의 로그인 요청을 받아 로그인을 시도한다.
-	 * 요청 정보는 http 패킷 내부에 다음과 같은 값으로 전송된다.
-	 * (userId = ? & password = ?)
-	 * 로그인 성공 시 1를, 실패 시 0을 전달한다.
-	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("application/json");
+		logger.debug(request.getRemoteAddr());
+		response.setContentType("application/json");					//PrintWriter 객체 생성 전에 설정해주어야 한다.
+		PrintWriter out = response.getWriter();
 		
 		String userId = request.getParameter("userId");
 		String password = request.getParameter("password");
 		
-		PrintWriter out = response.getWriter();
 		User user = new User(userId, password);
 		UserDao userDao = new UserDao();
 		
-		logger.debug("LOGIN attempted");
 		try {
 			if(userDao.login(user.getUserId(), user.getPassword())) {
-				logger.debug("login success : " + userId + " " + password);
+				logger.debug("Android {} login success", userId);
+				
+				HttpSession session = request.getSession();
+				session.setAttribute("userId", user.getUserId());
+				
+				DeviceDao deviceDao = new DeviceDao();
+				Device[] devices = deviceDao.ListDeviceInfo(userId);
+				
+				Arrays.sort(devices);
+				
+				session.setAttribute("devices", devices);
 				out.print("{perm:1}");
 			}else {
-				logger.debug("login failed : " + userId + password);
+				logger.debug("Android {} login fail", userId);
 				out.print("{perm:0}");
 			}
 		} catch (SQLException e) {
-			logger.debug("ApiLoginServlet userDao error");
 			e.printStackTrace();
 		}
 	}

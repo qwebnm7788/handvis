@@ -48,6 +48,7 @@ public class ApiAjaxServlet extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 
+		HttpSession session = request.getSession();
 		Connection conn = getConnection();
 		String sql = "SELECT currentAction from current where idx=0";
 		Statement stmt = null;
@@ -100,7 +101,7 @@ public class ApiAjaxServlet extends HttpServlet {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 
 		response.setContentType("application/json");
-		logger.debug(answer);
+		//logger.debug(answer);
 		out.print(answer);
 		out.flush();
 	}

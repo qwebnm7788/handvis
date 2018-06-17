@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,8 @@ public class ApiRecongnitionServlet extends HttpServlet {
 		String userId = element.getAsJsonObject().get("userId").getAsString();
 		int currentAction = element.getAsJsonObject().get("currentAction").getAsInt();
 		
+		HttpSession session = request.getSession();
+		session.setAttribute("currentAction", currentAction);
 		logger.debug("recognition " + userId + " " + currentAction);
 		Connection conn = getConnection();
 		
@@ -67,7 +70,7 @@ public class ApiRecongnitionServlet extends HttpServlet {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		int current = 0;
+		int current = 0, idx = 0;
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, currentAction);
@@ -75,8 +78,9 @@ public class ApiRecongnitionServlet extends HttpServlet {
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				current = rs.getInt("state");
+				idx = rs.getInt("idx");
 			}
-			//logger.debug("Current : " + current);
+			
 			if(pstmt != null) {
 				pstmt.close();
 			}
@@ -88,24 +92,8 @@ public class ApiRecongnitionServlet extends HttpServlet {
 			pstmt.setInt(2, currentAction);
 			pstmt.executeUpdate();
 			
-			sql = "UPDATE current set currentAction=? where idx=0";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, currentAction);
-
-			pstmt.executeUpdate();
-			
-			sql = "SELECT idx from iot where finger_idx=?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, currentAction);
-			
-			rs = pstmt.executeQuery();
-			int idx = 1;
-			if(rs.next()) {
-				idx = rs.getInt("idx");
-			}
-			
 			Arduino arduino = new Arduino();
-			String IP = "165.246.223.36";
+			String IP = "165.246.223.149";
 			int port = 5000;
 			String msg = arduino.sendMessage(IP, port, (current == 0 ? String.valueOf(idx * 4) : String.valueOf(idx)));	
 			

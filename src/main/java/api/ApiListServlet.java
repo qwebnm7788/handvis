@@ -31,16 +31,20 @@ import basic.DeviceDao;
 @WebServlet("/api/list")
 public class ApiListServlet extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(ApiListServlet.class);
+	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
+		PrintWriter out = response.getWriter();
+		
+		logger.error("Android Login Session ID {}", request.getRequestedSessionId());
 		
 		HttpSession session = request.getSession();
-		PrintWriter out = response.getWriter();
 		Gson gson = new Gson();
-		
-		String userId = request.getParameter("userId");
+
+		String userId = (String)session.getAttribute("userId");
+		//String userId = request.getParameter("userId");
 		StringBuilder result = new StringBuilder();
 		
 		result.append("{\"device\":[");
@@ -50,6 +54,7 @@ public class ApiListServlet extends HttpServlet {
 			result.append(gson.toJson(device, Device.class));
 			result.append(',');																	//각 json 사이에 ','가 들어가야 한다.
 		}
+		
 		result.deleteCharAt(result.length() - 1);										//맨 마지막에는 ','를 제거
 		result.append("]}");
 
